@@ -4,20 +4,21 @@ from bs4 import BeautifulSoup
 import funcs
 from pprint import pprint
 import time
-import os
+import  Osfuncs
+import generate_config
 from googlesearch import search
+generate_config.validaExistenciaConfig()
 
 cavaco = False
 
-ACCESS_TOKEN = 'BQBpUQKKcMoe7M_E17912SqXFOj_fIvq8cX3dSz6F1Yes1FV9MNJIckRQYyea7Ea1n8GKxQPKDI425GYXpiKnROitQRjF35WG3nBOSB6Nk0TuqwLkzSRdlzjTKsZVH5hwTTRTQUoKmhSL8Gkyw6DnBMz'
-url = "https://www.cifraclub.com.br/tuyo/"
+ACCESS_TOKEN = 'BQDavckFZZTyKqV13ByHzL1Ea1yJreZGs8IdF1YUg2HikeIZ44CD86fYVppROmHVL6aP9FjjgK1Uh5Cmyg7NYOeY1GIRajBUZagwPIEZ-ITkTA-ZgV7u03zVUpNuhLyS_bu5KJPZKbILIfhQmhC4ZmNq'
 
 headers = requests.utils.default_headers()
 headers.update({
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
 })
-r = requests.get(url, headers=headers)
-soup = BeautifulSoup(r.text, 'html.parser')
+#r = requests.get(url, headers=headers)
+#soup = BeautifulSoup(r.text, 'html.parser')
 
 
 
@@ -35,19 +36,22 @@ def main():
 
             funcs.ResultadosBusca()
 
-            nomeArtistaDesarrumado = funcs.PegaNomeArtista(current_track_info)
-            nomeMusicaDesarrumado = funcs.PegaNomeMusica(current_track_info)
+            nomeArtistaArrumado,nomeMusicaArrumado, nomeArtistaArrumadoBusca,nomeMusicaArrumadoBusca=funcs.Arrumador()
 
-            nomeArtistaArrumado = funcs.AjustaNomeArtista(nomeArtistaDesarrumado)
-            nomeMusicaArrumado = funcs.AjustaNomeMusica(nomeMusicaDesarrumado)
-            nomeArtistaArrumadoBusca = funcs.AjustaNomeArtistaBusca(nomeArtistaDesarrumado)
-            nomeMusicaArrumadoBusca = funcs.AjustaNomeMusicaBusca(nomeMusicaDesarrumado)
-
-            linkBusca = funcs.MontaUrlBusca(nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca)
+            #linkBusca = funcs.MontaUrlBusca(nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca)
             linktab = funcs.MontaLink(nomeArtistaArrumado, nomeMusicaArrumado)
             print(linktab)
             current_track_id = current_track_info['id']
-            funcs.PegaTab(linktab)
+
+            Osfuncs.cls()
+            tab,tabsemtags=funcs.PegaTab_CC(linktab)#cifraclubbase
+
+            funcs.ValidaCapo_CC(linktab)
+
+            print (tabsemtags)
+
+            #linktab("https://www.cifraclub.com.br/badflower/ghost/")
+
 
     time.sleep(1)
 
