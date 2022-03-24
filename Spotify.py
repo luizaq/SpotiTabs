@@ -1,5 +1,6 @@
 import requests
 import time
+import sys
 
 from pprint import pprint
 
@@ -15,7 +16,12 @@ def get_current_track(access_token):
             "Authorization": f"Bearer {access_token}"
         }
     )
+
     json_resp = response.json()
+
+    if 'error' in json_resp:
+        print("O token de autorização do Spotify expirou, encerrando...")
+        sys.exit()
 
     track_id = json_resp['item']['id']
     track_name = json_resp['item']['name']
