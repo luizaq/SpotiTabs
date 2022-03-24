@@ -12,16 +12,16 @@ generate_config.validaExistenciaConfig()
 
 
 
+
 ACCESS_TOKEN = Leconfigs.clientID
 
-#headers = requests.utils.default_headers()
-#headers.update({
-    #'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
-#})
 
 def main():
     current_track_id = None
     while True:
+        if Leconfigs.configValida == False:
+            print("Configuracoes invalidas, verifique o  log para mais detalhes, encerrando")
+            break
         current_track_info = Spotify.get_current_track(ACCESS_TOKEN)
 
         if current_track_info['id'] != current_track_id:
