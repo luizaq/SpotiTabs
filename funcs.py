@@ -3,23 +3,22 @@ import Spotify
 from bs4 import BeautifulSoup
 from googlesearch import search
 
-urlbase = "https://www.cifraclub.com.br"
+
 headers = requests.utils.default_headers()
 musicapossuicapo = False
 localizoutab_CC = True
 import Leconfigs
-
+ACCESS_TOKEN = Leconfigs.clientID
 linkstemp = []
 headers.update({
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
 })
 
-ACCESS_TOKEN = 'BQDavckFZZTyKqV13ByHzL1Ea1yJreZGs8IdF1YUg2HikeIZ44CD86fYVppROmHVL6aP9FjjgK1Uh5Cmyg7NYOeY1GIRajBUZagwPIEZ-ITkTA-ZgV7u03zVUpNuhLyS_bu5KJPZKbILIfhQmhC4ZmNq'
 
 encontrou = True
 
 
-def MontaLink(artista, musica):
+def MontaLink_CC(artista, musica):
     # ltt="/tuyo/sem-mentir/"
     ltt = "/" + artista + "/" + musica + "/"
     QtdLinksEncontrados = 0
@@ -28,7 +27,7 @@ def MontaLink(artista, musica):
     # QtdLinksEncontrados+=1
     # busca os links na lista, link desejadk = ltt
 
-    linkre = urlbase + ltt
+    linkre = "https://www.cifraclub.com.br" + ltt
     return linkre
 
 
@@ -245,6 +244,7 @@ def BuscaNoGoogle(sitePrimario, termobusca):
 
     for j in search(query, tld="com", num=10, stop=10, pause=2):
         print(j)
+
 
 # limpar o console entre musicas-ok
 ## lidar musica pausada

@@ -27,6 +27,12 @@ def criaConfigBase():
     config_file.set("TabSettings", "sitePreferencial", "CC")#UG OU CC
     config_file.set("TabSettings", "buscarSempre", "nao")# buscar sempre no google ou adivinhar link (somente cc)
 
+    config_file["Spotify"] = {
+        "ClientId": "xxx",
+        "ClientSecret": "xx",
+
+    }
+
     # SAVE CONFIG FILE
     with open(r"configurations.ini", 'w') as configfileObj:
         config_file.write(configfileObj)
