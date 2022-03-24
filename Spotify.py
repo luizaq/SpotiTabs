@@ -1,11 +1,11 @@
 import requests
-import time
+import sys
 
-from pprint import pprint
+#https://spotipy.readthedocs.io/en/2.12.0/
 
 
 SPOTIFY_GET_CURRENT_TRACK_URL = 'https://api.spotify.com/v1/me/player/currently-playing'
-ACCESS_TOKEN = 'BQC-TF6hhxxnvU6LoRtpp0xcB_74h2wYLIL7QG-E702cI2NpKafycL7-0Q28QSxWIPAsZcXvVOHrpJQBt4FOfhVpRR-15h9BGgRhwM3rNJsJ_vruswstnKMhDlSsT1chshmtCMbO-Q1Z7YO8NwzwezXj'
+
 
 
 def get_current_track(access_token):
@@ -15,7 +15,12 @@ def get_current_track(access_token):
             "Authorization": f"Bearer {access_token}"
         }
     )
+
     json_resp = response.json()
+
+    if 'error' in json_resp:
+        print("O token de autorização do Spotify expirou, encerrando...")
+        sys.exit()
 
     track_id = json_resp['item']['id']
     track_name = json_resp['item']['name']
@@ -34,21 +39,3 @@ def get_current_track(access_token):
 
     return current_track_info
 
-
-def main():
-	current_track_id = None
-	while True:
-	    current_track_info = get_current_track(ACCESS_TOKEN)
-
-	    if current_track_info['id'] != current_track_id:
-		    pprint(
-		    	current_track_info,
-		    	indent=4,
-		    )
-		    current_track_id = current_track_info['id']
-
-	    time.sleep(1)
-
-
-if __name__ == '__main__':
-    main()
