@@ -2,7 +2,8 @@ import requests
 import Spotify
 from bs4 import BeautifulSoup
 from googlesearch import search
-
+import logging
+from termcolor import colored
 
 headers = requests.utils.default_headers()
 musicapossuicapo = False
@@ -17,6 +18,7 @@ headers.update({
 
 encontrou = True
 
+#logging.basicConfig(filename='funcs.log', encoding='utf-8', level=logging.DEBUG)
 
 def MontaLink_CC(artista, musica):
     # ltt="/tuyo/sem-mentir/"
@@ -66,7 +68,7 @@ def RemoveTagsTab_CC():
     Tabstring = file.read().replace('<b>', '').replace('</b>', ' ')
 
     if (Tabstring == "tab = []\n"):  # nao encontra tab.buscar no google?
-        print("semtab")
+        logging.info("Cifra nao encontrada no CC")
         localizoutab_CC = False
         EncaminhaBusca()
 
@@ -93,17 +95,22 @@ def ValidaCapo_CC(url):
     # print(caponova)
 
     if (caponova == ' '):
-        print("!sem capo!")
+        text=colored("MUSICA NAO POSSUI CAPO",'red', attrs=['reverse', 'blink'])
+        print(text)
         musicapossuicapo = False
+        logging.info("MUSICA NAO POSSUI CAPO")
     elif ('=' in caponova):
-        print("!!!!MUSICA TEM CAPO!!!!!")
+
+        text=colored("!!!!MUSICA TEM CAPO!!!!!",'green', attrs=['reverse', 'blink'])
         musicapossuicapo = True
+        logging.info("Musica tem capo.")
+        print(text)
         caponova = caponova.replace('=', '')
         print(caponova)
     else:
-        print("Falha: nao sei se musica tem capo")
-        ##salvar em log?
+
         musicapossuicapo = False
+        logging.warning("Nao foi possivel validar se musica tem capo")
 
     return musicapossuicapo, caponova
 
@@ -244,6 +251,13 @@ def BuscaNoGoogle(sitePrimario, termobusca):
 
     for j in search(query, tld="com", num=10, stop=10, pause=2):
         print(j)
+
+def ValidaInstrumento(instrumento,sitePreferencial,nomeArtistaArrumado, nomeMusicaArrumado):
+    linktab = MontaLink_CC(nomeArtistaArrumado, nomeMusicaArrumado)
+
+  
+
+
 
 
 # limpar o console entre musicas-ok

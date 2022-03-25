@@ -35,7 +35,8 @@ def main():
             nomeArtistaArrumado,nomeMusicaArrumado, nomeArtistaArrumadoBusca,nomeMusicaArrumadoBusca=funcs.Arrumador()
 
             #linkBusca = funcs.MontaUrlBusca(nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca)
-            linktab = funcs.MontaLink_CC(nomeArtistaArrumado, nomeMusicaArrumado)
+            funcs.ValidaInstrumento(a)
+            #linktab = funcs.MontaLink_CC(nomeArtistaArrumado, nomeMusicaArrumado)
             print(linktab)
             current_track_id = current_track_info['id']
 
