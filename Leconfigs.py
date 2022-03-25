@@ -88,6 +88,7 @@ def ValidaInstrumento(instrumento):
           or instrumento == "Bass" or instrumento == "Baixo" or
           instrumento == "baixo" or instrumento == "BAIXO"):
         instrumento = "B"
+        configValidaI = True
     elif (instrumento == "U" or instrumento == "u" or instrumento == "Ukulele" or
           instrumento == "UKULELE" or instrumento == "ukulele"):
         instrumento = "U"

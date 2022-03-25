@@ -35,9 +35,16 @@ def main():
             nomeArtistaArrumado,nomeMusicaArrumado, nomeArtistaArrumadoBusca,nomeMusicaArrumadoBusca=funcs.Arrumador()
 
             #linkBusca = funcs.MontaUrlBusca(nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca)
-            funcs.ValidaInstrumento(a)
-            #linktab = funcs.MontaLink_CC(nomeArtistaArrumado, nomeMusicaArrumado)
-            print(linktab)
+
+
+            instrumento=Leconfigs.instrumento
+            sitePreferencial=Leconfigs.sitePreferencial
+            idEncaminhamento=0
+            idEncaminhamento=funcs.ValidaInstrumento(instrumento,sitePreferencial)
+            print (idEncaminhamento)
+
+            linktab = funcs.MontaLink_CC(nomeArtistaArrumado, nomeMusicaArrumado,idEncaminhamento)
+            #print(linktab)
             current_track_id = current_track_info['id']
 
             Osfuncs.cls()

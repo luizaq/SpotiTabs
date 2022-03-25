@@ -9,27 +9,45 @@ headers = requests.utils.default_headers()
 musicapossuicapo = False
 localizoutab_CC = True
 import Leconfigs
+
 ACCESS_TOKEN = Leconfigs.clientID
 linkstemp = []
 headers.update({
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
 })
 
-
 encontrou = True
 
-#logging.basicConfig(filename='funcs.log', encoding='utf-8', level=logging.DEBUG)
 
-def MontaLink_CC(artista, musica):
-    # ltt="/tuyo/sem-mentir/"
+
+def MontaLink_CC(artista, musica,idEncaminhamento):
     ltt = "/" + artista + "/" + musica + "/"
-    QtdLinksEncontrados = 0
-    # /nome-artista/nome-musica
-    # for link in linkstemp:
-    # QtdLinksEncontrados+=1
-    # busca os links na lista, link desejadk = ltt
+    base="https://www.cifraclub.com.br"
+    linkre=""
+    print("/""/""/""/""/""/""/""/""/")
+    print(type(idEncaminhamento))
+    if idEncaminhamento==11:#guitar
+        linkre = base + ltt
+        logging.info(linkre)
+    elif idEncaminhamento==12:#cavaco
+        linkre = base + ltt + "#tabs=false&instrument=cavaco"
+        logging.info(linkre)
+        print(linkre)
 
-    linkre = "https://www.cifraclub.com.br" + ltt
+    elif idEncaminhamento==13:#baixo
+        print("Chegou no if 13")
+        linkre = base + ltt + "tabs-baixo/"
+        print(linkre)
+        logging.info(linkre)
+
+    elif idEncaminhamento==14: #ukulele
+
+        linkre = base + ltt + "#instrument=ukulele&tabs=false"
+        logging.info(linkre)
+    else:
+        logging.error("erro ao identificar id de link e instrumento")
+
+
     return linkre
 
 
@@ -95,13 +113,13 @@ def ValidaCapo_CC(url):
     # print(caponova)
 
     if (caponova == ' '):
-        text=colored("MUSICA NAO POSSUI CAPO",'red', attrs=['reverse', 'blink'])
+        text = colored("MUSICA NAO POSSUI CAPO", 'red', attrs=['reverse', 'blink'])
         print(text)
         musicapossuicapo = False
         logging.info("MUSICA NAO POSSUI CAPO")
     elif ('=' in caponova):
 
-        text=colored("!!!!MUSICA TEM CAPO!!!!!",'green', attrs=['reverse', 'blink'])
+        text = colored("!!!!MUSICA TEM CAPO!!!!!", 'green', attrs=['reverse', 'blink'])
         musicapossuicapo = True
         logging.info("Musica tem capo.")
         print(text)
@@ -134,8 +152,10 @@ def AjustaNomeMusicaBusca(musica):
 def AjustaNomeArtista(artist):
     artisttemp = ''
     subs = '+'
-    artisttemp = artist.replace(" ", "-")
+    artisttemp = artist.replace(" ", "-").replace("ã","a").replace("ç","c")
     artisttemp = artisttemp.lower()
+    if (artisttemp=="exaltasamba"):
+        artisttemp="exaltasamba-musicas"
     # print(artisttemp)
     return artisttemp
 
@@ -143,7 +163,7 @@ def AjustaNomeArtista(artist):
 def AjustaNomeMusica(musica):
     musicatemp = ''
     subs = '+'
-    musicatemp = musica.replace(" ", "-")
+    musicatemp = musica.replace(" ", "-").replace("ã","a").replace("ç","c")
     # print(musicatemp)
     musicatemp = musicatemp.lower()
     return musicatemp
@@ -238,7 +258,6 @@ def BuscaNoGoogle(sitePrimario, termobusca):
     print("Cifra nao encontrada pelo metodo chute, mostrando resultados no google.....")
     print("----------------------------------------------------------------------------")
 
-
     if (sitePrimario == "UG"):
         query = "Ultimate Guitar" + termobusca + "tab"
         print("Seu site de busca primario e Ultimate guitar")
@@ -252,13 +271,47 @@ def BuscaNoGoogle(sitePrimario, termobusca):
     for j in search(query, tld="com", num=10, stop=10, pause=2):
         print(j)
 
-def ValidaInstrumento(instrumento,sitePreferencial,nomeArtistaArrumado, nomeMusicaArrumado):
-    linktab = MontaLink_CC(nomeArtistaArrumado, nomeMusicaArrumado)
 
-  
+def ValidaInstrumento(instrumento, sitePreferencial):
+    idEncaminhamento=0
+    #1=cc,2=ug,3=songster, 4=??
+    #1=gutar,2=cavaco,3=baixo 4= uku ,5=??
+    if (sitePreferencial == "CC"):
+
+        if (instrumento == "G"):
+            logging.info("ENCAMINHADO TAB =CHORDS,GUITAR,CC")
+            idEncaminhamento=11
+            logging.info(idEncaminhamento)
+
+        elif (instrumento == "C"):
+
+            logging.info("ENCAMINHADO TAB =CHORDS,CAVACO,CC")
+            idEncaminhamento = 12
+            logging.info(idEncaminhamento)
+
+
+        elif (instrumento == "B"):
+
+            logging.info("ENCAMINHADO TAB =TAB,baixo,CC")
+            idEncaminhamento = 13
+            logging.info(idEncaminhamento)
+
+
+        elif (instrumento == "U"):
+
+            logging.info("INSTRUMENTO = UKULELE")
+            idEncaminhamento = 14
+            logging.info(idEncaminhamento)
+
+
+        else:
+            idEncaminhamento = 45
+            logging.info(idEncaminhamento)
+            logging.error("NAO ENCAMINHADO TAB = ????")
 
 
 
+    return idEncaminhamento
 
 # limpar o console entre musicas-ok
 ## lidar musica pausada
