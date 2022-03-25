@@ -19,34 +19,34 @@ headers.update({
 encontrou = True
 
 
-
-def MontaLink_CC(artista, musica,idEncaminhamento):
+def MontaLink_CC(artista, musica, idEncaminhamento):
     ltt = "/" + artista + "/" + musica + "/"
-    base="https://www.cifraclub.com.br"
-    linkre=""
+    base = "https://www.cifraclub.com.br"
+    linkre = ""
     print("/""/""/""/""/""/""/""/""/")
     print(type(idEncaminhamento))
-    if idEncaminhamento==11:#guitar
+    if idEncaminhamento == 11:  # guitar
         linkre = base + ltt
         logging.info(linkre)
-    elif idEncaminhamento==12:#cavaco
+        print(linkre)
+    elif idEncaminhamento == 12:  # cavaco
         linkre = base + ltt + "#tabs=false&instrument=cavaco"
         logging.info(linkre)
         print(linkre)
 
-    elif idEncaminhamento==13:#baixo
+    elif idEncaminhamento == 13:  # baixo
         print("Chegou no if 13")
         linkre = base + ltt + "tabs-baixo/"
         print(linkre)
         logging.info(linkre)
 
-    elif idEncaminhamento==14: #ukulele
+    elif idEncaminhamento == 14:  # ukulele
 
         linkre = base + ltt + "#instrument=ukulele&tabs=false"
         logging.info(linkre)
+        print(linkre)
     else:
         logging.error("erro ao identificar id de link e instrumento")
-
 
     return linkre
 
@@ -152,10 +152,10 @@ def AjustaNomeMusicaBusca(musica):
 def AjustaNomeArtista(artist):
     artisttemp = ''
     subs = '+'
-    artisttemp = artist.replace(" ", "-").replace("ã","a").replace("ç","c")
+    artisttemp = artist.replace(" ", "-").replace("ã", "a").replace("ç", "c")
     artisttemp = artisttemp.lower()
-    if (artisttemp=="exaltasamba"):
-        artisttemp="exaltasamba-musicas"
+    if (artisttemp == "exaltasamba"):
+        artisttemp = "exaltasamba-musicas"
     # print(artisttemp)
     return artisttemp
 
@@ -163,7 +163,7 @@ def AjustaNomeArtista(artist):
 def AjustaNomeMusica(musica):
     musicatemp = ''
     subs = '+'
-    musicatemp = musica.replace(" ", "-").replace("ã","a").replace("ç","c")
+    musicatemp = musica.replace(" ", "-").replace("ã", "a").replace("ç", "c")
     # print(musicatemp)
     musicatemp = musicatemp.lower()
     return musicatemp
@@ -203,9 +203,14 @@ def Arrumador():
     nomeMusicaDesarrumado = PegaNomeMusica(current_track_info)
 
     nomeArtistaArrumado = AjustaNomeArtista(nomeArtistaDesarrumado)
-    nomeMusicaArrumado = AjustaNomeMusica(nomeMusicaDesarrumado)
     nomeArtistaArrumadoBusca = AjustaNomeArtistaBusca(nomeArtistaDesarrumado)
-    nomeMusicaArrumadoBusca = AjustaNomeMusicaBusca(nomeMusicaDesarrumado)
+
+    if (nomeArtistaArrumadoBusca == "taylor+swift" or nomeArtistaArrumado == "taylor-swift"):
+        nomeMusicaArrumado,nomeMusicaArrumadoBusca=RegraDaTaylor(nomeMusicaDesarrumado)
+
+    else:
+        nomeMusicaArrumado = AjustaNomeMusica(nomeMusicaDesarrumado)
+        nomeMusicaArrumadoBusca = AjustaNomeMusicaBusca(nomeMusicaDesarrumado)
 
     return nomeArtistaArrumado, nomeMusicaArrumado, nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca
 
@@ -222,6 +227,26 @@ def ResultadosBusca():
     file.write("%s = %s\n" % ("res", resultados))
     file.close()
 
+
+def RegraDaTaylor(nomeMusicaDesarrumado):
+    print("Caiu na regra da Taylor")
+    logging.info("Caiu na regra da Taylor")
+
+    nomeMusicaArrumado= nomeMusicaDesarrumado.replace(" (10 Minute Version) ","x")\
+        .replace(" (Taylor's Version)","").replace("(Taylor's Version)","").replace(" (Acoustic Version)","")\
+        .replace(" (From The Vault)","").replace(" (feat. Ed Sheeran)","").replace(" ", "-")
+
+    #nomeMusicaArrumado = nomeMusicaDesarrumado.replace(" ", "-")
+
+
+    nomeMusicaArrumadoBusca = nomeMusicaDesarrumado.replace(" ", "+")
+
+    nomeMusicaArrumadoT=nomeMusicaArrumado.lower()
+    nomeMusicaArrumadoBuscaT = nomeMusicaArrumadoBusca.lower()
+
+
+
+    return nomeMusicaArrumadoT,nomeMusicaArrumadoBuscaT
 
 def PaginaArtista():
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -273,14 +298,14 @@ def BuscaNoGoogle(sitePrimario, termobusca):
 
 
 def ValidaInstrumento(instrumento, sitePreferencial):
-    idEncaminhamento=0
-    #1=cc,2=ug,3=songster, 4=??
-    #1=gutar,2=cavaco,3=baixo 4= uku ,5=??
+    idEncaminhamento = 0
+    # 1=cc,2=ug,3=songster, 4=??
+    # 1=gutar,2=cavaco,3=baixo 4= uku ,5=??
     if (sitePreferencial == "CC"):
 
         if (instrumento == "G"):
             logging.info("ENCAMINHADO TAB =CHORDS,GUITAR,CC")
-            idEncaminhamento=11
+            idEncaminhamento = 11
             logging.info(idEncaminhamento)
 
         elif (instrumento == "C"):
@@ -308,8 +333,6 @@ def ValidaInstrumento(instrumento, sitePreferencial):
             idEncaminhamento = 45
             logging.info(idEncaminhamento)
             logging.error("NAO ENCAMINHADO TAB = ????")
-
-
 
     return idEncaminhamento
 
