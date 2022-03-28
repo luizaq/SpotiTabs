@@ -205,7 +205,7 @@ def Arrumador():
     nomeArtistaArrumado = AjustaNomeArtista(nomeArtistaDesarrumado)
     nomeArtistaArrumadoBusca = AjustaNomeArtistaBusca(nomeArtistaDesarrumado)
 
-    if (nomeArtistaArrumadoBusca == "taylor+swift" or nomeArtistaArrumado == "taylor-swift"):
+    if (nomeArtistaArrumadoBusca == "taylor+swift" or nomeArtistaArrumado == "taylor-swift" or nomeArtistaArrumado == "taylor-swift,-ed-sheeran"):
         nomeMusicaArrumado,nomeMusicaArrumadoBusca=RegraDaTaylor(nomeMusicaDesarrumado)
 
     else:
@@ -231,11 +231,13 @@ def ResultadosBusca():
 def RegraDaTaylor(nomeMusicaDesarrumado):
     print("Caiu na regra da Taylor")
     logging.info("Caiu na regra da Taylor")
+    print(nomeMusicaDesarrumado)
 
     nomeMusicaArrumado= nomeMusicaDesarrumado.replace(" (10 Minute Version) ","x")\
         .replace(" (Taylor's Version)","").replace("(Taylor's Version)","").replace(" (Acoustic Version)","")\
-        .replace(" (From The Vault)","").replace(" (feat. Ed Sheeran)","").replace(" ", "-")
+        .replace(" (From The Vault)","").replace(" (feat. Ed Sheeran) ","").replace(" ", "-")
 
+    print(nomeMusicaArrumado)
     #nomeMusicaArrumado = nomeMusicaDesarrumado.replace(" ", "-")
 
 
