@@ -1,6 +1,5 @@
 import configparser
-import logging
-import Osfuncs
+
 
 
 def imprimeConfig():
@@ -28,7 +27,6 @@ def converteBool(ignoraLetras, salvacifras, exibeConsole, buscarSempre):
         ignoraLetrasB = False
     else:
         print("Igonora letras invalido.")
-        logging.error("Ignora letras invalido")
 
     ###################salva cifras
 
@@ -41,7 +39,6 @@ def converteBool(ignoraLetras, salvacifras, exibeConsole, buscarSempre):
         salvacifrasB = False
     else:
         print("salva cifras invalido.")
-        logging.error("Salva Cifras invalido")
 
     ########################################exibe console
     if (exibeConsole == "sim" or exibeConsole == "SIM" or exibeConsole == "Sim" or exibeConsole == "True"
@@ -53,7 +50,6 @@ def converteBool(ignoraLetras, salvacifras, exibeConsole, buscarSempre):
         exibeConsoleB = False
     else:
         print("Exibe console invalido.")
-        logging.error("Exibe Console invalido")
 
     ########################################## Buscar sempre
 
@@ -66,7 +62,6 @@ def converteBool(ignoraLetras, salvacifras, exibeConsole, buscarSempre):
         buscarSempreB = False
     else:
         print("Buscar sempre invalido.")
-        logging.error("Buscar sempre invalido.")
 
     return ignoraLetrasB, salvacifrasB, exibeConsoleB, buscarSempreB
 
@@ -88,7 +83,6 @@ def ValidaInstrumento(instrumento):
           or instrumento == "Bass" or instrumento == "Baixo" or
           instrumento == "baixo" or instrumento == "BAIXO"):
         instrumento = "B"
-        configValidaI = True
     elif (instrumento == "U" or instrumento == "u" or instrumento == "Ukulele" or
           instrumento == "UKULELE" or instrumento == "ukulele"):
         instrumento = "U"
@@ -98,7 +92,6 @@ def ValidaInstrumento(instrumento):
         print("Instrumento escolhido invalido. Verifique o arquivo configurations.ini")
         #log
         configValidaI=False
-        logging.error("Instrumento invalido")
 
     return instrumento,configValidaI
 
@@ -119,14 +112,12 @@ def ValidaSitePreferencial(sitePreferencial):
         print("Site preferencial invalido, verifique o arquivo configurations.ini")
         configValidaT= False
         #log
-        logging.error("Site Preferencial invalido")
     return sitePreferencial,configValidaT
 
 def ValidaCavaco(instrumento, sitePreferencial):
     if(sitePreferencial=="UG" and instrumento == "C"):
         print("Gringo nao conhece cavaco, selecione site primario cc no configurations.ini")
         configValidaT=False
-        logging.error("Cavaco e UG invalido")
         #log
     else:
         configValidaT=True
@@ -151,7 +142,6 @@ def ValidadorDeValidacoes(configValidaT,configValidaI,configValidaS,configValida
         print("Configs Validas")
         configValida = True
         #log
-        logging.info("Todas configs validas")
     return configValida
 
 
