@@ -3,31 +3,29 @@ import requests
 import Spotify
 from bs4 import BeautifulSoup
 from googlesearch import search
-
-
+import logging
+from termcolor import colored
 
 headers = requests.utils.default_headers()
 musicapossuicapo = False
 localizoutab_CC = True
 import Leconfigs
+
 ACCESS_TOKEN = Leconfigs.clientID
 linkstemp = []
 headers.update({
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
 })
 
-
 encontrou = True
 
 
-def MontaLink_CC(artista, musica):
-    # ltt="/tuyo/sem-mentir/"
+def MontaLink_CC(artista, musica, idEncaminhamento):
     ltt = "/" + artista + "/" + musica + "/"
-
     base = "https://www.cifraclub.com.br"
     linkre = ""
     print("/""/""/""/""/""/""/""/""/")
-    #print(type(idEncaminhamento))
+    print(type(idEncaminhamento))
     if idEncaminhamento == 11:  # guitar
         linkre = base + ltt
         logging.info(linkre)
@@ -51,14 +49,6 @@ def MontaLink_CC(artista, musica):
     else:
         logging.error("erro ao identificar id de link e instrumento")
 
-    
-    # /nome-artista/nome-musica
-    # for link in linkstemp:
-    # QtdLinksEncontrados+=1
-    # busca os links na lista, link desejadk = ltt
-
-
-    linkre = "https://www.cifraclub.com.br" + ltt
     return linkre
 
 
@@ -96,13 +86,10 @@ def RemoveTagsTab_CC():
     file = open("tab.txt", "r")
     Tabstring = file.read().replace('<b>', '').replace('</b>', ' ')
 
-
-    if (Tabstring == "tab = []\n"):  # nao encontra tab.buscar no google
+    if (Tabstring == "tab = []\n"):  # nao encontra tab.buscar no google?
         logging.info("Cifra nao encontrada no CC")
-        Print("Cifra nao encontrada no CC")
-
         localizoutab_CC = False
-        CriaTermoBusca()
+        EncaminhaBusca()
 
     file.close()
     return Tabstring
@@ -127,17 +114,22 @@ def ValidaCapo_CC(url):
     # print(caponova)
 
     if (caponova == ' '):
-        print("!sem capo!")
+        text = colored("MUSICA NAO POSSUI CAPO", 'red', attrs=['reverse', 'blink'])
+        print(text)
         musicapossuicapo = False
+        logging.info("MUSICA NAO POSSUI CAPO")
     elif ('=' in caponova):
-        print("!!!!MUSICA TEM CAPO!!!!!")
+
+        text = colored("!!!!MUSICA TEM CAPO!!!!!", 'green', attrs=['reverse', 'blink'])
         musicapossuicapo = True
+        logging.info("Musica tem capo.")
+        print(text)
         caponova = caponova.replace('=', '')
         print(caponova)
     else:
-        print("Falha: nao sei se musica tem capo")
-        ##salvar em log?
+
         musicapossuicapo = False
+        logging.warning("Nao foi possivel validar se musica tem capo")
 
     return musicapossuicapo, caponova
 
@@ -161,8 +153,10 @@ def AjustaNomeMusicaBusca(musica):
 def AjustaNomeArtista(artist):
     artisttemp = ''
     subs = '+'
-    artisttemp = artist.replace(" ", "-")
+    artisttemp = artist.replace(" ", "-").replace("ã", "a").replace("ç", "c")
     artisttemp = artisttemp.lower()
+    if (artisttemp == "exaltasamba"):
+        artisttemp = "exaltasamba-musicas"
     # print(artisttemp)
     return artisttemp
 
@@ -170,7 +164,7 @@ def AjustaNomeArtista(artist):
 def AjustaNomeMusica(musica):
     musicatemp = ''
     subs = '+'
-    musicatemp = musica.replace(" ", "-")
+    musicatemp = musica.replace(" ", "-").replace("ã", "a").replace("ç", "c")
     # print(musicatemp)
     musicatemp = musicatemp.lower()
     return musicatemp
@@ -210,9 +204,14 @@ def Arrumador():
     nomeMusicaDesarrumado = PegaNomeMusica(current_track_info)
 
     nomeArtistaArrumado = AjustaNomeArtista(nomeArtistaDesarrumado)
-    nomeMusicaArrumado = AjustaNomeMusica(nomeMusicaDesarrumado)
     nomeArtistaArrumadoBusca = AjustaNomeArtistaBusca(nomeArtistaDesarrumado)
-    nomeMusicaArrumadoBusca = AjustaNomeMusicaBusca(nomeMusicaDesarrumado)
+
+    if (nomeArtistaArrumadoBusca == "taylor+swift" or nomeArtistaArrumado == "taylor-swift" or nomeArtistaArrumado == "taylor-swift,-ed-sheeran"):
+        nomeMusicaArrumado,nomeMusicaArrumadoBusca=RegraDaTaylor(nomeMusicaDesarrumado)
+
+    else:
+        nomeMusicaArrumado = AjustaNomeMusica(nomeMusicaDesarrumado)
+        nomeMusicaArrumadoBusca = AjustaNomeMusicaBusca(nomeMusicaDesarrumado)
 
     return nomeArtistaArrumado, nomeMusicaArrumado, nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca
 
@@ -229,6 +228,28 @@ def ResultadosBusca():
     file.write("%s = %s\n" % ("res", resultados))
     file.close()
 
+
+def RegraDaTaylor(nomeMusicaDesarrumado):
+    print("Caiu na regra da Taylor")
+    logging.info("Caiu na regra da Taylor")
+    print(nomeMusicaDesarrumado)
+
+    nomeMusicaArrumado= nomeMusicaDesarrumado.replace(" (10 Minute Version) ","x")\
+        .replace(" (Taylor's Version)","").replace("(Taylor's Version)","").replace(" (Acoustic Version)","")\
+        .replace(" (From The Vault)","").replace(" (feat. Ed Sheeran) ","").replace(" ", "-")
+
+    print(nomeMusicaArrumado)
+    #nomeMusicaArrumado = nomeMusicaDesarrumado.replace(" ", "-")
+
+
+    nomeMusicaArrumadoBusca = nomeMusicaDesarrumado.replace(" ", "+")
+
+    nomeMusicaArrumadoT=nomeMusicaArrumado.lower()
+    nomeMusicaArrumadoBuscaT = nomeMusicaArrumadoBusca.lower()
+
+
+
+    return nomeMusicaArrumadoT,nomeMusicaArrumadoBuscaT
 
 def PaginaArtista():
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -252,53 +273,34 @@ def LeConfigs():
         print(line, end="")
 
 
-def CriaTermoBusca(idEncaminhamento):
+def EncaminhaBusca():
     nomeArtistaArrumado, nomeMusicaArrumado, nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca = Arrumador()
-    idE=idEncaminhamento
+
     sitePrimario = Leconfigs.sitePreferencial
     termobusca = MontaTermoBuscaGoogle(nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca)
-    #BuscaNoGoogle(termobusca)
-    EncaminhaBusca(idE,termobusca)
+    BuscaNoGoogle(sitePrimario, termobusca)
 
-def EncaminhaBusca(idEncaminhamento,termobusca):
 
-    if (idEncaminhamento == 11):
-        query= "CIFRA CLUB" + "+" +termobusca + "+" + "cifra"
-    elif  (idEncaminhamento == 12):
-        query = "CIFRA CLUB" + "+" + termobusca + "+" +"cifra" + "+" + "cavaco"
-
-    elif (idEncaminhamento == 13):
-
-        query = "CIFRA CLUB" + "+" +termobusca + "+" + "cifra" + "+" + "baixo"
-
-    elif (idEncaminhamento == 14):
-
-        query = "CIFRA CLUB" + "+" + termobusca + "+" + "cifra" + "+" + "ukulele"
-
-    elif (idEncaminhamento ==21):
-        query = "Ultimate Guitar" + "+" + termobusca + "+" + "tab"
-
-    elif (idEncaminhamento == 23):
-        query = "Ultimate Guitar" + "+" + termobusca + "+" + "tab" + "+" + "bass"
-
-    elif (idEncaminhamento==24):
-        query = "Ultimate Guitar" + "+" + termobusca + "+" + "tab" + "+" + "ukulele"
-
-    BuscaNoGoogle(query)
-
-def BuscaNoGoogle(query):
+def BuscaNoGoogle(sitePrimario, termobusca):
     print("----------------------------------------------------------------------------")
-    print("Mostrando resultados no google.....")
+    print("Cifra nao encontrada pelo metodo chute, mostrando resultados no google.....")
     print("----------------------------------------------------------------------------")
-    print (query)
 
+    if (sitePrimario == "UG"):
+        query = "Ultimate Guitar" + termobusca + "tab"
+        print("Seu site de busca primario e Ultimate guitar")
+    elif (sitePrimario == "CC"):
+        query = "CIFRA CLUB" + termobusca + "cifra"
+        print("Seu site de busca primario e CifraCLub")
+    else:
+        print("ERRO SITE PRIMARIO INVALIDO")
+        # Cifraclub usa google para obter buscas.##buscando pelo google pode ser utilziado tb o ug
 
     for j in search(query, tld="com", num=10, stop=10, pause=2):
         print(j)
 
 
-
-def CriaIdEncaminhamento(instrumento, sitePreferencial):
+def ValidaInstrumento(instrumento, sitePreferencial):
     idEncaminhamento = 0
     # 1=cc,2=ug,3=songster, 4=??
     # 1=gutar,2=cavaco,3=baixo 4= uku ,5=??
@@ -325,47 +327,17 @@ def CriaIdEncaminhamento(instrumento, sitePreferencial):
 
         elif (instrumento == "U"):
 
-            logging.info("INSTRUMENTO = UKULELE,CHORD , CC")
+            logging.info("INSTRUMENTO = UKULELE")
             idEncaminhamento = 14
             logging.info(idEncaminhamento)
 
 
-
-
-    elif (sitePreferencial == "UG"):
-
-        if (instrumento == "G"):
-            logging.info("ENCAMINHADO TAB =CHORDS,GUITAR,UG")
-            idEncaminhamento = 21
+        else:
+            idEncaminhamento = 45
             logging.info(idEncaminhamento)
+            logging.error("NAO ENCAMINHADO TAB = ????")
 
-        elif (instrumento == "C"):
-
-            logging.info("ENCAMINHADO TAB =CHORDS,CAVACO,UG")
-            idEncaminhamento = 22
-            logging.info(idEncaminhamento)
-            logging.error("Gringo nao toca cavaco")
-
-        elif (instrumento == "B"):
-
-            logging.info("ENCAMINHADO TAB =TAB,baixo,UG")
-            idEncaminhamento = 23
-            logging.info(idEncaminhamento)
-
-        elif (instrumento == "U"):
-
-            logging.info("INSTRUMENTO = UKULELE, CHORDS ,UG")
-            idEncaminhamento = 24
-            logging.info(idEncaminhamento)
-
-
-
-    else:
-        idEncaminhamento = 45
-        logging.info(idEncaminhamento)
-        logging.error("NAO ENCAMINHADO TAB = ????")
     return idEncaminhamento
-
 
 # limpar o console entre musicas-ok
 ## lidar musica pausada

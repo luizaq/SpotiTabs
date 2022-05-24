@@ -1,5 +1,13 @@
 import configparser
 
+import logging
+from os.path import exists
+
+import Osfuncs
+import generate_config
+
+#configExiste=generate_config.validaExistenciaConfig()
+
 
 
 def imprimeConfig():
@@ -144,7 +152,7 @@ def ValidadorDeValidacoes(configValidaT,configValidaI,configValidaS,configValida
         #log
     return configValida
 
-
+#generate_config.validaExistenciaConfig()
 
 configs = read_config()
 ignoraLetras = configs['TabSettings']["ignoraLetras"]
@@ -156,7 +164,7 @@ buscarSempre = configs['TabSettings']["buscarSempre"]
 
 clientID = configs["Spotify"]["ClientId"]
 clientSecret = configs["Spotify"]["ClientSecret"]
-
+print(clientID)
 ignoraLetrasB, salvacifrasB, exibeConsoleB, buscarSempreB = converteBool(ignoraLetras, salvacifras, exibeConsole,
 
 

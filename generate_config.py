@@ -1,4 +1,5 @@
 import configparser
+import logging
 from os.path import exists
 import Leconfigs
 #https://www.codeproject.com/Articles/5319621/Configuration-Files-in-Python
@@ -9,9 +10,14 @@ def validaExistenciaConfig():
     if file_exists:
         print ("Arquivo existe")
         Leconfigs.read_config()
-    elif not file_exists:
+        configExiste = True
+    else:
         print("Arquivo nao encontrado")
+        logging.error("SEM CONFIGS-Arquivo configs nao encontrado")
         criaConfigBase()
+        configExiste = False
+
+    return configExiste
 
 def criaConfigBase():
     config_file = configparser.ConfigParser()
@@ -40,6 +46,8 @@ def criaConfigBase():
         configfileObj.close()
 
     print("Config file 'configurations.ini' created")
+
+
 
     # PRINT FILE CONTENT
     read_file = open("configurations.ini", "r")

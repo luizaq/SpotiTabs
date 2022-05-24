@@ -1,22 +1,26 @@
-import requests
-import Spotify
+import logging
 
+import generate_config
+from os.path import exists
+
+import Spotify
 import funcs
 from pprint import pprint
 import time
 import  Osfuncs
-import generate_config
+
 import Leconfigs
 
+
+
+#configExiste=generate_config.validaExistenciaConfig()
 generate_config.validaExistenciaConfig()
 
-
-
-
 ACCESS_TOKEN = Leconfigs.clientID
-
+print(ACCESS_TOKEN)
 
 def main():
+    generate_config.validaExistenciaConfig()
     current_track_id = None
     while True:
         if Leconfigs.configValida == False:
@@ -35,18 +39,45 @@ def main():
             nomeArtistaArrumado,nomeMusicaArrumado, nomeArtistaArrumadoBusca,nomeMusicaArrumadoBusca=funcs.Arrumador()
 
             #linkBusca = funcs.MontaUrlBusca(nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca)
-            linktab = funcs.MontaLink_CC(nomeArtistaArrumado, nomeMusicaArrumado)
-            print(linktab)
+
+
+
+            instrumento=Leconfigs.instrumento
+            sitePreferencial=Leconfigs.sitePreferencial
+            idEncaminhamento=0
+            idEncaminhamento=funcs.CriaIdEncaminhamento(instrumento,sitePreferencial)
+            buscarsempre=Leconfigs.buscarSempreB
+            print (idEncaminhamento)
+
+
+
+
+
+
+            #linktab = funcs.MontaLink_CC(nomeArtistaArrumado, nomeMusicaArrumado,idEncaminhamento)
+            #print(linktab)
+            
+
             current_track_id = current_track_info['id']
 
             Osfuncs.cls()
-            tab,tabsemtags=funcs.PegaTab_CC(linktab)#cifraclubbase
+            print(buscarsempre)
+            if (idEncaminhamento == 11 or idEncaminhamento == 12 or idEncaminhamento == 13 or idEncaminhamento == 14):
+                # cc
+                if buscarsempre:
+                    funcs.CriaTermoBusca(idEncaminhamento)
+                else:
+                    linktab = funcs.MontaLink_CC(nomeArtistaArrumado, nomeMusicaArrumado, idEncaminhamento)
+                    tab,tabsemtags=funcs.PegaTab_CC(linktab)#cifraclubbase
+                    funcs.ValidaCapo_CC(linktab)
+                    print (tabsemtags)
 
-            funcs.ValidaCapo_CC(linktab)
+            elif (idEncaminhamento == 21  or idEncaminhamento == 23 or idEncaminhamento == 24) :
+                funcs.CriaTermoBusca(idEncaminhamento)
+            else:
+                logging.error ("Erro de id ")
+                print("Erro de id ")
 
-            print (tabsemtags)
-
-            #linktab("https://www.cifraclub.com.br/badflower/ghost/")
 
 
     time.sleep(1)
