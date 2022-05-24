@@ -6,7 +6,6 @@ from googlesearch import search
 import logging
 from termcolor import colored
 
-
 headers = requests.utils.default_headers()
 musicapossuicapo = False
 localizoutab_CC = True
@@ -26,7 +25,7 @@ def MontaLink_CC(artista, musica, idEncaminhamento):
     base = "https://www.cifraclub.com.br"
     linkre = ""
     print("/""/""/""/""/""/""/""/""/")
-    #print(type(idEncaminhamento))
+    print(type(idEncaminhamento))
     if idEncaminhamento == 11:  # guitar
         linkre = base + ltt
         logging.info(linkre)
@@ -87,11 +86,10 @@ def RemoveTagsTab_CC():
     file = open("tab.txt", "r")
     Tabstring = file.read().replace('<b>', '').replace('</b>', ' ')
 
-    if (Tabstring == "tab = []\n"):  # nao encontra tab.buscar no google
+    if (Tabstring == "tab = []\n"):  # nao encontra tab.buscar no google?
         logging.info("Cifra nao encontrada no CC")
-        Print("Cifra nao encontrada no CC")
         localizoutab_CC = False
-        CriaTermoBusca()
+        EncaminhaBusca()
 
     file.close()
     return Tabstring
@@ -275,51 +273,34 @@ def LeConfigs():
         print(line, end="")
 
 
-def CriaTermoBusca(idEncaminhamento):
+def EncaminhaBusca():
     nomeArtistaArrumado, nomeMusicaArrumado, nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca = Arrumador()
-    idE=idEncaminhamento
+
     sitePrimario = Leconfigs.sitePreferencial
     termobusca = MontaTermoBuscaGoogle(nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca)
-    #BuscaNoGoogle(termobusca)
-    EncaminhaBusca(idE,termobusca)
+    BuscaNoGoogle(sitePrimario, termobusca)
 
-def EncaminhaBusca(idEncaminhamento,termobusca):
 
-    if (idEncaminhamento == 11):
-        query= "CIFRA CLUB" + "+" +termobusca + "+" + "cifra"
-    elif  (idEncaminhamento == 12):
-        query = "CIFRA CLUB" + "+" + termobusca + "+" +"cifra" + "+" + "cavaco"
-
-    elif (idEncaminhamento == 13):
-
-        query = "CIFRA CLUB" + "+" +termobusca + "+" + "cifra" + "+" + "baixo"
-
-    elif (idEncaminhamento == 14):
-
-        query = "CIFRA CLUB" + "+" + termobusca + "+" + "cifra" + "+" + "ukulele"
-
-    elif (idEncaminhamento ==21):
-        query = "Ultimate Guitar" + "+" + termobusca + "+" + "tab"
-
-    elif (idEncaminhamento == 23):
-        query = "Ultimate Guitar" + "+" + termobusca + "+" + "tab" + "+" + "bass"
-
-    elif (idEncaminhamento==24):
-        query = "Ultimate Guitar" + "+" + termobusca + "+" + "tab" + "+" + "ukulele"
-
-    BuscaNoGoogle(query)
-
-def BuscaNoGoogle(query):
+def BuscaNoGoogle(sitePrimario, termobusca):
     print("----------------------------------------------------------------------------")
-    print("Mostrando resultados no google.....")
+    print("Cifra nao encontrada pelo metodo chute, mostrando resultados no google.....")
     print("----------------------------------------------------------------------------")
-    print (query)
+
+    if (sitePrimario == "UG"):
+        query = "Ultimate Guitar" + termobusca + "tab"
+        print("Seu site de busca primario e Ultimate guitar")
+    elif (sitePrimario == "CC"):
+        query = "CIFRA CLUB" + termobusca + "cifra"
+        print("Seu site de busca primario e CifraCLub")
+    else:
+        print("ERRO SITE PRIMARIO INVALIDO")
+        # Cifraclub usa google para obter buscas.##buscando pelo google pode ser utilziado tb o ug
 
     for j in search(query, tld="com", num=10, stop=10, pause=2):
         print(j)
 
 
-def CriaIdEncaminhamento(instrumento, sitePreferencial):
+def ValidaInstrumento(instrumento, sitePreferencial):
     idEncaminhamento = 0
     # 1=cc,2=ug,3=songster, 4=??
     # 1=gutar,2=cavaco,3=baixo 4= uku ,5=??
@@ -346,45 +327,16 @@ def CriaIdEncaminhamento(instrumento, sitePreferencial):
 
         elif (instrumento == "U"):
 
-            logging.info("INSTRUMENTO = UKULELE,CHORD , CC")
+            logging.info("INSTRUMENTO = UKULELE")
             idEncaminhamento = 14
             logging.info(idEncaminhamento)
 
 
-
-
-    elif (sitePreferencial == "UG"):
-
-        if (instrumento == "G"):
-            logging.info("ENCAMINHADO TAB =CHORDS,GUITAR,UG")
-            idEncaminhamento = 21
+        else:
+            idEncaminhamento = 45
             logging.info(idEncaminhamento)
+            logging.error("NAO ENCAMINHADO TAB = ????")
 
-        elif (instrumento == "C"):
-
-            logging.info("ENCAMINHADO TAB =CHORDS,CAVACO,UG")
-            idEncaminhamento = 22
-            logging.info(idEncaminhamento)
-            logging.error("Gringo nao toca cavaco")
-
-        elif (instrumento == "B"):
-
-            logging.info("ENCAMINHADO TAB =TAB,baixo,UG")
-            idEncaminhamento = 23
-            logging.info(idEncaminhamento)
-
-        elif (instrumento == "U"):
-
-            logging.info("INSTRUMENTO = UKULELE, CHORDS ,UG")
-            idEncaminhamento = 24
-            logging.info(idEncaminhamento)
-
-
-
-    else:
-        idEncaminhamento = 45
-        logging.info(idEncaminhamento)
-        logging.error("NAO ENCAMINHADO TAB = ????")
     return idEncaminhamento
 
 # limpar o console entre musicas-ok
