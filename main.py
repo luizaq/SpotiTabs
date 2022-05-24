@@ -41,6 +41,7 @@ def main():
             #linkBusca = funcs.MontaUrlBusca(nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca)
 
 
+
             instrumento=Leconfigs.instrumento
             sitePreferencial=Leconfigs.sitePreferencial
             idEncaminhamento=0
@@ -55,6 +56,8 @@ def main():
 
             #linktab = funcs.MontaLink_CC(nomeArtistaArrumado, nomeMusicaArrumado,idEncaminhamento)
             #print(linktab)
+            
+
             current_track_id = current_track_info['id']
 
             Osfuncs.cls()

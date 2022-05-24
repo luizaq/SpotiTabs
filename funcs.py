@@ -3,26 +3,27 @@ import requests
 import Spotify
 from bs4 import BeautifulSoup
 from googlesearch import search
-import logging
-from termcolor import colored
+
 
 
 headers = requests.utils.default_headers()
 musicapossuicapo = False
 localizoutab_CC = True
 import Leconfigs
-
 ACCESS_TOKEN = Leconfigs.clientID
 linkstemp = []
 headers.update({
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
 })
 
+
 encontrou = True
 
 
-def MontaLink_CC(artista, musica, idEncaminhamento):
+def MontaLink_CC(artista, musica):
+    # ltt="/tuyo/sem-mentir/"
     ltt = "/" + artista + "/" + musica + "/"
+
     base = "https://www.cifraclub.com.br"
     linkre = ""
     print("/""/""/""/""/""/""/""/""/")
@@ -50,6 +51,14 @@ def MontaLink_CC(artista, musica, idEncaminhamento):
     else:
         logging.error("erro ao identificar id de link e instrumento")
 
+    
+    # /nome-artista/nome-musica
+    # for link in linkstemp:
+    # QtdLinksEncontrados+=1
+    # busca os links na lista, link desejadk = ltt
+
+
+    linkre = "https://www.cifraclub.com.br" + ltt
     return linkre
 
 
@@ -87,9 +96,11 @@ def RemoveTagsTab_CC():
     file = open("tab.txt", "r")
     Tabstring = file.read().replace('<b>', '').replace('</b>', ' ')
 
+
     if (Tabstring == "tab = []\n"):  # nao encontra tab.buscar no google
         logging.info("Cifra nao encontrada no CC")
         Print("Cifra nao encontrada no CC")
+
         localizoutab_CC = False
         CriaTermoBusca()
 
@@ -116,22 +127,17 @@ def ValidaCapo_CC(url):
     # print(caponova)
 
     if (caponova == ' '):
-        text = colored("MUSICA NAO POSSUI CAPO", 'red', attrs=['reverse', 'blink'])
-        print(text)
+        print("!sem capo!")
         musicapossuicapo = False
-        logging.info("MUSICA NAO POSSUI CAPO")
     elif ('=' in caponova):
-
-        text = colored("!!!!MUSICA TEM CAPO!!!!!", 'green', attrs=['reverse', 'blink'])
+        print("!!!!MUSICA TEM CAPO!!!!!")
         musicapossuicapo = True
-        logging.info("Musica tem capo.")
-        print(text)
         caponova = caponova.replace('=', '')
         print(caponova)
     else:
-
+        print("Falha: nao sei se musica tem capo")
+        ##salvar em log?
         musicapossuicapo = False
-        logging.warning("Nao foi possivel validar se musica tem capo")
 
     return musicapossuicapo, caponova
 
@@ -155,10 +161,8 @@ def AjustaNomeMusicaBusca(musica):
 def AjustaNomeArtista(artist):
     artisttemp = ''
     subs = '+'
-    artisttemp = artist.replace(" ", "-").replace("ã", "a").replace("ç", "c")
+    artisttemp = artist.replace(" ", "-")
     artisttemp = artisttemp.lower()
-    if (artisttemp == "exaltasamba"):
-        artisttemp = "exaltasamba-musicas"
     # print(artisttemp)
     return artisttemp
 
@@ -166,7 +170,7 @@ def AjustaNomeArtista(artist):
 def AjustaNomeMusica(musica):
     musicatemp = ''
     subs = '+'
-    musicatemp = musica.replace(" ", "-").replace("ã", "a").replace("ç", "c")
+    musicatemp = musica.replace(" ", "-")
     # print(musicatemp)
     musicatemp = musicatemp.lower()
     return musicatemp
@@ -206,14 +210,9 @@ def Arrumador():
     nomeMusicaDesarrumado = PegaNomeMusica(current_track_info)
 
     nomeArtistaArrumado = AjustaNomeArtista(nomeArtistaDesarrumado)
+    nomeMusicaArrumado = AjustaNomeMusica(nomeMusicaDesarrumado)
     nomeArtistaArrumadoBusca = AjustaNomeArtistaBusca(nomeArtistaDesarrumado)
-
-    if (nomeArtistaArrumadoBusca == "taylor+swift" or nomeArtistaArrumado == "taylor-swift" or nomeArtistaArrumado == "taylor-swift,-ed-sheeran"):
-        nomeMusicaArrumado,nomeMusicaArrumadoBusca=RegraDaTaylor(nomeMusicaDesarrumado)
-
-    else:
-        nomeMusicaArrumado = AjustaNomeMusica(nomeMusicaDesarrumado)
-        nomeMusicaArrumadoBusca = AjustaNomeMusicaBusca(nomeMusicaDesarrumado)
+    nomeMusicaArrumadoBusca = AjustaNomeMusicaBusca(nomeMusicaDesarrumado)
 
     return nomeArtistaArrumado, nomeMusicaArrumado, nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca
 
@@ -230,28 +229,6 @@ def ResultadosBusca():
     file.write("%s = %s\n" % ("res", resultados))
     file.close()
 
-
-def RegraDaTaylor(nomeMusicaDesarrumado):
-    print("Caiu na regra da Taylor")
-    logging.info("Caiu na regra da Taylor")
-    print(nomeMusicaDesarrumado)
-
-    nomeMusicaArrumado= nomeMusicaDesarrumado.replace(" (10 Minute Version) ","x")\
-        .replace(" (Taylor's Version)","").replace("(Taylor's Version)","").replace(" (Acoustic Version)","")\
-        .replace(" (From The Vault)","").replace(" (feat. Ed Sheeran) ","").replace(" ", "-")
-
-    print(nomeMusicaArrumado)
-    #nomeMusicaArrumado = nomeMusicaDesarrumado.replace(" ", "-")
-
-
-    nomeMusicaArrumadoBusca = nomeMusicaDesarrumado.replace(" ", "+")
-
-    nomeMusicaArrumadoT=nomeMusicaArrumado.lower()
-    nomeMusicaArrumadoBuscaT = nomeMusicaArrumadoBusca.lower()
-
-
-
-    return nomeMusicaArrumadoT,nomeMusicaArrumadoBuscaT
 
 def PaginaArtista():
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -315,8 +292,10 @@ def BuscaNoGoogle(query):
     print("----------------------------------------------------------------------------")
     print (query)
 
+
     for j in search(query, tld="com", num=10, stop=10, pause=2):
         print(j)
+
 
 
 def CriaIdEncaminhamento(instrumento, sitePreferencial):
@@ -386,6 +365,7 @@ def CriaIdEncaminhamento(instrumento, sitePreferencial):
         logging.info(idEncaminhamento)
         logging.error("NAO ENCAMINHADO TAB = ????")
     return idEncaminhamento
+
 
 # limpar o console entre musicas-ok
 ## lidar musica pausada
