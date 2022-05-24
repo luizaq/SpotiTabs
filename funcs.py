@@ -1,29 +1,28 @@
-
 import requests
 import Spotify
 from bs4 import BeautifulSoup
 from googlesearch import search
-
+import logging
+from termcolor import colored
 
 
 headers = requests.utils.default_headers()
 musicapossuicapo = False
 localizoutab_CC = True
 import Leconfigs
+
+
 ACCESS_TOKEN = Leconfigs.clientID
 linkstemp = []
 headers.update({
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
 })
 
-
 encontrou = True
 
 
-def MontaLink_CC(artista, musica):
-    # ltt="/tuyo/sem-mentir/"
+def MontaLink_CC(artista, musica, idEncaminhamento):
     ltt = "/" + artista + "/" + musica + "/"
-
     base = "https://www.cifraclub.com.br"
     linkre = ""
     print("/""/""/""/""/""/""/""/""/")
@@ -51,16 +50,7 @@ def MontaLink_CC(artista, musica):
     else:
         logging.error("erro ao identificar id de link e instrumento")
 
-    
-    # /nome-artista/nome-musica
-    # for link in linkstemp:
-    # QtdLinksEncontrados+=1
-    # busca os links na lista, link desejadk = ltt
-
-
-    linkre = "https://www.cifraclub.com.br" + ltt
     return linkre
-
 
 def MontaTermoBuscaGoogle(artist, Nmusca):
     termobuscagoogle = artist + "+" + Nmusca
@@ -96,13 +86,13 @@ def RemoveTagsTab_CC():
     file = open("tab.txt", "r")
     Tabstring = file.read().replace('<b>', '').replace('</b>', ' ')
 
-
     if (Tabstring == "tab = []\n"):  # nao encontra tab.buscar no google
         logging.info("Cifra nao encontrada no CC")
-        Print("Cifra nao encontrada no CC")
 
+        print("Cifra nao encontrada no CC")
         localizoutab_CC = False
-        CriaTermoBusca()
+        ###ajustar para buscarcom o id correto.
+        CriaTermoBusca(11)
 
     file.close()
     return Tabstring
@@ -254,48 +244,47 @@ def LeConfigs():
 
 def CriaTermoBusca(idEncaminhamento):
     nomeArtistaArrumado, nomeMusicaArrumado, nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca = Arrumador()
-    idE=idEncaminhamento
+    idE = idEncaminhamento
     sitePrimario = Leconfigs.sitePreferencial
     termobusca = MontaTermoBuscaGoogle(nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca)
-    #BuscaNoGoogle(termobusca)
-    EncaminhaBusca(idE,termobusca)
+    # BuscaNoGoogle(termobusca)
+    EncaminhaBusca(idE, termobusca)
 
-def EncaminhaBusca(idEncaminhamento,termobusca):
 
+def EncaminhaBusca(idEncaminhamento, termobusca):
     if (idEncaminhamento == 11):
-        query= "CIFRA CLUB" + "+" +termobusca + "+" + "cifra"
-    elif  (idEncaminhamento == 12):
-        query = "CIFRA CLUB" + "+" + termobusca + "+" +"cifra" + "+" + "cavaco"
+        query = "CIFRA CLUB" + "+" + termobusca + "+" + "cifra"
+    elif (idEncaminhamento == 12):
+        query = "CIFRA CLUB" + "+" + termobusca + "+" + "cifra" + "+" + "cavaco"
 
     elif (idEncaminhamento == 13):
 
-        query = "CIFRA CLUB" + "+" +termobusca + "+" + "cifra" + "+" + "baixo"
+        query = "CIFRA CLUB" + "+" + termobusca + "+" + "cifra" + "+" + "baixo"
 
     elif (idEncaminhamento == 14):
 
         query = "CIFRA CLUB" + "+" + termobusca + "+" + "cifra" + "+" + "ukulele"
 
-    elif (idEncaminhamento ==21):
+    elif (idEncaminhamento == 21):
         query = "Ultimate Guitar" + "+" + termobusca + "+" + "tab"
 
     elif (idEncaminhamento == 23):
         query = "Ultimate Guitar" + "+" + termobusca + "+" + "tab" + "+" + "bass"
 
-    elif (idEncaminhamento==24):
+    elif (idEncaminhamento == 24):
         query = "Ultimate Guitar" + "+" + termobusca + "+" + "tab" + "+" + "ukulele"
 
     BuscaNoGoogle(query)
+
 
 def BuscaNoGoogle(query):
     print("----------------------------------------------------------------------------")
     print("Mostrando resultados no google.....")
     print("----------------------------------------------------------------------------")
-    print (query)
-
+    print(query)
 
     for j in search(query, tld="com", num=10, stop=10, pause=2):
         print(j)
-
 
 
 def CriaIdEncaminhamento(instrumento, sitePreferencial):
@@ -365,7 +354,6 @@ def CriaIdEncaminhamento(instrumento, sitePreferencial):
         logging.info(idEncaminhamento)
         logging.error("NAO ENCAMINHADO TAB = ????")
     return idEncaminhamento
-
 
 # limpar o console entre musicas-ok
 ## lidar musica pausada
