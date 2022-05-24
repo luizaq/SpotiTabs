@@ -92,11 +92,13 @@ def RemoveTagsTab_CC():
         print("Cifra nao encontrada no CC")
         localizoutab_CC = False
         ###ajustar para buscarcom o id correto.
+
+        localizoutab_CC = False
+    ###ajustar para buscarcom o id correto.
         CriaTermoBusca(11)
 
     file.close()
     return Tabstring
-
 
 def ValidaCapo_CC(url):
     urlt = url

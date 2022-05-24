@@ -35,22 +35,16 @@ def main():
 
             funcs.ResultadosBusca()
 
+            # linkBusca = funcs.MontaUrlBusca(nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca)
 
-
-            #linkBusca = funcs.MontaUrlBusca(nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca)
-
-
-
-            instrumento=Leconfigs.instrumento
-            sitePreferencial=Leconfigs.sitePreferencial
-            idEncaminhamento=0
-            idEncaminhamento=funcs.CriaIdEncaminhamento(instrumento,sitePreferencial)
-            buscarsempre=Leconfigs.buscarSempreB
-            print (idEncaminhamento)
-
+            instrumento = Leconfigs.instrumento
+            sitePreferencial = Leconfigs.sitePreferencial
+            idEncaminhamento = 0
+            idEncaminhamento = funcs.CriaIdEncaminhamento(instrumento, sitePreferencial)
+            buscarsempre = Leconfigs.buscarSempreB
+            print(idEncaminhamento)
 
             nomeArtistaArrumado, nomeMusicaArrumado, nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca = funcs.Arrumador()
-
 
             # linkBusca = funcs.MontaUrlBusca(nomeArtistaArrumadoBusca, nomeMusicaArrumadoBusca)
 
@@ -61,15 +55,11 @@ def main():
             buscarsempre = Leconfigs.buscarSempreB
             print(idEncaminhamento)
 
-
-
-            #linktab = funcs.MontaLink_CC(nomeArtistaArrumado, nomeMusicaArrumado,idEncaminhamento)
-            #print(linktab)
-            
-
+            # linktab = funcs.MontaLink_CC(nomeArtistaArrumado, nomeMusicaArrumado,idEncaminhamento)
+            # print(linktab)
 
             current_track_id = current_track_info['id']
-            localizoutab_CC =funcs.localizoutab_CC
+            localizoutab_CC = funcs.localizoutab_CC
             Osfuncs.cls()
             print(buscarsempre)
             if (idEncaminhamento == 11 or idEncaminhamento == 12 or idEncaminhamento == 13 or idEncaminhamento == 14):
@@ -81,8 +71,7 @@ def main():
                     tab, tabsemtags = funcs.PegaTab_CC(linktab)  # cifraclubbase
                     funcs.ValidaCapo_CC(linktab)
 
-
-                    print (tabsemtags)
+                    print(tabsemtags)
 
             elif (idEncaminhamento == 21 or idEncaminhamento == 23 or idEncaminhamento == 24):
                 funcs.CriaTermoBusca(idEncaminhamento)
