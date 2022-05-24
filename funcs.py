@@ -99,14 +99,18 @@ def RemoveTagsTab_CC():
 
     if (Tabstring == "tab = []\n"):  # nao encontra tab.buscar no google
         logging.info("Cifra nao encontrada no CC")
+<<<<<<< Updated upstream
         Print("Cifra nao encontrada no CC")
 
+=======
+        print("Cifra nao encontrada no CC")
+>>>>>>> Stashed changes
         localizoutab_CC = False
-        CriaTermoBusca()
+    ###ajustar para buscarcom o id correto.
+        CriaTermoBusca(11)
 
     file.close()
     return Tabstring
-
 
 def ValidaCapo_CC(url):
     urlt = url
